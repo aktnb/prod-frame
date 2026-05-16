@@ -1,0 +1,29 @@
+{
+  "appName": { "message": "Prod Frame" },
+  "appDescription": { "message": "Add a border to pages matching URL patterns to prevent mistakes in production." },
+  "addRule": { "message": "+ Add Rule" },
+  "noRules": { "message": "No rules yet. Add one below." },
+  "urlPattern": { "message": "URL Pattern" },
+  "urlPatternHint": { "message": "* is a wildcard. Matched against the full URL." },
+  "urlPatternHint2": { "message": "e.g. *youtube.com*, https://example.com/*" },
+  "testUrl": { "message": "Test URL" },
+  "matchResultMatch": { "message": "✓ Match" },
+  "matchResultNoMatch": { "message": "✗ No Match" },
+  "borderColor": { "message": "Border Color" },
+  "borderWidth": { "message": "Width" },
+  "opacity": { "message": "Opacity" },
+  "update": { "message": "Update" },
+  "add": { "message": "Add" },
+  "cancel": { "message": "Cancel" },
+  "enabled": { "message": "Enabled" },
+  "disabled": { "message": "Disabled" },
+  "deleteConfirm": {
+    "message": "Delete \"$URL$\"?",
+    "placeholders": {
+      "url": { "content": "$1" }
+    }
+  },
+  "delete": { "message": "Delete" },
+  "errorLoad": { "message": "Failed to load rules." },
+  "errorSave": { "message": "Failed to save rules." }
+}

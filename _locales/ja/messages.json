@@ -1,0 +1,29 @@
+{
+  "appName": { "message": "Prod Frame" },
+  "appDescription": { "message": "URLパターンにマッチするページに枠線を表示し、本番環境の誤操作を防ぐ。" },
+  "addRule": { "message": "+ ルールを追加" },
+  "noRules": { "message": "ルールがありません。追加してください。" },
+  "urlPattern": { "message": "URLパターン" },
+  "urlPatternHint": { "message": "* はワイルドカード。URL全体と照合されます。" },
+  "urlPatternHint2": { "message": "例: *youtube.com*、https://example.com/*" },
+  "testUrl": { "message": "URLをテスト" },
+  "matchResultMatch": { "message": "✓ マッチ" },
+  "matchResultNoMatch": { "message": "✗ 非マッチ" },
+  "borderColor": { "message": "枠線の色" },
+  "borderWidth": { "message": "太さ" },
+  "opacity": { "message": "不透明度" },
+  "update": { "message": "更新" },
+  "add": { "message": "追加" },
+  "cancel": { "message": "キャンセル" },
+  "enabled": { "message": "有効" },
+  "disabled": { "message": "無効" },
+  "deleteConfirm": {
+    "message": "「$URL$」を削除しますか？",
+    "placeholders": {
+      "url": { "content": "$1" }
+    }
+  },
+  "delete": { "message": "削除" },
+  "errorLoad": { "message": "読み込みに失敗しました" },
+  "errorSave": { "message": "保存に失敗しました" }
+}
