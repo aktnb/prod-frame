@@ -35,7 +35,7 @@ jobs:
       - run: pnpm build
 
       - name: Create zip
-        run: zip -r prod-frame-${{ github.ref_name }}.zip dist/
+        run: cd dist && zip -r ../prod-frame-${{ github.ref_name }}.zip .
 
       - uses: softprops/action-gh-release@v2
         with:
