@@ -18,7 +18,7 @@ pnpm typecheck    # 型チェック（noEmit）
 
 ## アーキテクチャ
 
-`@crxjs/vite-plugin` が `manifest.json` を読み込み、Chrome拡張機能の3コンテキストをViteでビルドする。
+`@crxjs/vite-plugin` が `manifest.config.ts`（`defineManifest` で定義）を読み込み、Chrome拡張機能の3コンテキストをViteでビルドする。
 
 | コンテキスト | ファイル | 役割 |
 |---|---|---|
