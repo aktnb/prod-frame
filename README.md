@@ -24,6 +24,26 @@ pnpm typecheck  # 型チェック（noEmit）
 
 `pnpm dev` 実行中は、ソースを変更するとすぐに `dist/` が更新される。Chrome の拡張機能管理画面で「更新」ボタンを押すと最新のビルドが反映される。
 
+## リリース
+
+1. `package.json` の `version` を新しいバージョンに更新し、変更を `master` にマージする。
+2. 最新の `master` で、同じバージョンの新規タグを作成して push する（例: `version` が `1.0.2` の場合）。
+
+   ```bash
+   git switch master
+   git pull --ff-only origin master
+   git tag v1.0.2
+   git push origin v1.0.2
+   ```
+
+`v*` タグの push で Release workflow が実行され、型チェック・本番ビルド・ZIP 検証に成功すると GitHub Release に `prod-frame-v1.0.2.zip` が添付される。タグと `package.json`・ビルド済み manifest のバージョンが一致しない場合は公開を中止する。
+
+### 配布 ZIP のインストール
+
+1. [GitHub Releases](https://github.com/aktnb/prod-frame/releases) から `prod-frame-vX.Y.Z.zip` をダウンロードして解凍する。
+2. Chrome で `chrome://extensions/` を開き、デベロッパーモードを有効にする。
+3. 「パッケージ化されていない拡張機能を読み込む」から、`manifest.json` がある解凍先フォルダを選択する。
+
 ## 使い方
 
 1. ツールバーの Prod Frame アイコンをクリックしてポップアップを開く

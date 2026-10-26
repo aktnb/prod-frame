@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
@@ -31,12 +33,34 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm typecheck
+
       - run: pnpm build
 
-      - name: Create zip
-        run: cd dist && zip -r ../prod-frame-${{ github.ref_name }}.zip .
+      - name: Create and verify distribution zip
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          mkdir -p dist-zip
+          (cd dist && zip -r "../dist-zip/prod-frame-${RELEASE_TAG}.zip" .)
+          python3 - <<'PY'
+          import json
+          import os
+          import zipfile
+          from pathlib import Path
+
+          tag = os.environ["RELEASE_TAG"]
+          version = json.loads(Path("package.json").read_text())["version"]
+          with zipfile.ZipFile(f"dist-zip/prod-frame-{tag}.zip") as archive:
+              if archive.testzip() is not None:
+                  raise SystemExit("Distribution zip is corrupt")
+              manifest = json.loads(archive.read("manifest.json"))
+              if manifest["version"] != version or tag != f"v{version}":
+                  raise SystemExit("Manifest, package and tag versions must match")
+          PY
 
       - uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.ref_name }}
-          files: prod-frame-${{ github.ref_name }}.zip
+          files: dist-zip/prod-frame-${{ github.ref_name }}.zip
+          fail_on_unmatched_files: true
