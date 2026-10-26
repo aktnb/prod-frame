@@ -25,12 +25,23 @@ jobs:
           const fs = require('node:fs');
           const { execFileSync } = require('node:child_process');
           const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          delete pkg.pnpm;
+          fs.writeFileSync('pnpm-workspace.yaml', 'allowBuilds:\n  esbuild: true\n');
           pkg.type = 'module';
           pkg.engines = { node: '>=22.12.0' };
           pkg.packageManager = 'pnpm@' + execFileSync('npm', ['view', 'pnpm', 'version'], {encoding: 'utf8'}).trim();
           fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           NODE
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('vite.config.ts')
+          p.write_text(p.read_text().replace('"./manifest.config"', '"./manifest.config.ts"'))
+          p = Path('manifest.config.ts')
+          p.write_text(p.read_text().replace('import pkg from "./package.json";', 'import pkg from "./package.json" with { type: "json" };'))
+          PY
           pnpm update --latest
+          rm -rf node_modules
+          pnpm install --frozen-lockfile
           pnpm list --depth 0
       - name: Typecheck
         run: pnpm typecheck
@@ -63,5 +74,5 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
-          print("UPDATED_FILES_JSON=" + json.dumps({p: Path(p).read_text() for p in ["package.json", "pnpm-lock.yaml"]}))
+          print("UPDATED_FILES_JSON=" + json.dumps({p: Path(p).read_text() for p in ["package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "vite.config.ts", "manifest.config.ts"]}))
           PY
