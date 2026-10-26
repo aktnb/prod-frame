@@ -1,0 +1,46 @@
+name: Validate latest packages (temporary)
+on:
+  push:
+    branches:
+      - chore/update-packages-20261026
+    paths:
+      - .github/workflows/update-packages-temporary.yml
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install latest pnpm
+        run: npm install --global pnpm@latest
+      - name: Update dependencies
+        run: |
+          node --input-type=commonjs <<'NODE'
+          const fs = require('node:fs');
+          const { execFileSync } = require('node:child_process');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          pkg.packageManager = 'pnpm@' + execFileSync('pnpm', ['--version'], {encoding: 'utf8'}).trim();
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          NODE
+          pnpm update --latest
+          pnpm list --depth 0
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Build
+        run: pnpm build
+      - name: Verify frozen installation
+        run: pnpm install --frozen-lockfile
+      - name: Print updated manifests for review
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          print("UPDATED_FILES_JSON=" + json.dumps({p: Path(p).read_text() for p in ["package.json", "pnpm-lock.yaml"]}))
+          PY
