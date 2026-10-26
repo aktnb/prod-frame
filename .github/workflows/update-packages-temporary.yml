@@ -25,7 +25,9 @@ jobs:
           const fs = require('node:fs');
           const { execFileSync } = require('node:child_process');
           const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-          pkg.packageManager = 'pnpm@' + execFileSync('pnpm', ['--version'], {encoding: 'utf8'}).trim();
+          pkg.type = 'module';
+          pkg.engines = { node: '>=22.12.0' };
+          pkg.packageManager = 'pnpm@' + execFileSync('npm', ['view', 'pnpm', 'version'], {encoding: 'utf8'}).trim();
           fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           NODE
           pnpm update --latest
@@ -34,6 +36,25 @@ jobs:
         run: pnpm typecheck
       - name: Build
         run: pnpm build
+      - name: Check extension output
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const manifest = JSON.parse(fs.readFileSync('dist/manifest.json', 'utf8'));
+          assert.equal(manifest.manifest_version, 3);
+          const paths = [
+            manifest.background.service_worker,
+            manifest.action.default_popup,
+            ...Object.values(manifest.icons),
+            ...manifest.content_scripts.flatMap(s => s.js),
+            ...(manifest.web_accessible_resources ?? []).flatMap(r => r.resources).filter(p => !p.includes('*')),
+            '_locales/en/messages.json',
+            '_locales/ja/messages.json',
+          ];
+          for (const path of paths) assert.ok(fs.existsSync('dist/' + path), path);
+          console.log('Verified extension manifest and ' + paths.length + ' output paths.');
+          NODE
       - name: Verify frozen installation
         run: pnpm install --frozen-lockfile
       - name: Print updated manifests for review
