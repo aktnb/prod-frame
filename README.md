@@ -27,16 +27,9 @@ pnpm typecheck  # 型チェック（noEmit）
 ## リリース
 
 1. `package.json` の `version` を新しいバージョンに更新し、変更を `master` にマージする。
-2. 最新の `master` で、同じバージョンの新規タグを作成して push する（例: `version` が `1.0.2` の場合）。
+2. GitHub の Actions で Release workflow を開き、「Run workflow」で `master` ブランチを選択して実行する。
 
-   ```bash
-   git switch master
-   git pull --ff-only origin master
-   git tag v1.0.2
-   git push origin v1.0.2
-   ```
-
-`v*` タグの push で Release workflow が実行され、型チェック・本番ビルド・ZIP 検証に成功すると GitHub Release に `prod-frame-v1.0.2.zip` が添付される。タグと `package.json`・ビルド済み manifest のバージョンが一致しない場合は公開を中止する。
+Release workflow は `master` ブランチでのみ実行できる。本番ビルド後、`dist/manifest.json` の `version`（`package.json` から生成）からタグを作成し、配布 ZIP を GitHub Release に添付する。例えば `version` が `1.0.2` なら、タグは `v1.0.2`、添付ファイルは `prod-frame-v1.0.2.zip` になる。同名タグが既に存在する場合は workflow が失敗し、Release の公開には進まない。
 
 ### 配布 ZIP のインストール
 
