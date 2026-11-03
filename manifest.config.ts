@@ -6,6 +6,10 @@ export default defineManifest({
   name: "__MSG_appName__",
   description: "__MSG_appDescription__",
   default_locale: "ja",
+  options_ui: {
+    page: "src/options/options.html",
+    open_in_tab: true,
+  },
   version: pkg.version,
   action: {
     default_popup: "src/popup/popup.html",
@@ -21,7 +25,7 @@ export default defineManifest({
       js: ["src/content/index.ts"],
     },
   ],
-  permissions: ["storage"],
+  permissions: ["storage", "clipboardWrite"],
   icons: {
     "128": "images/icon-128.png",
   },

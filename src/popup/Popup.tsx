@@ -11,6 +11,7 @@ export function Popup() {
   return (
     <div style={{ padding: "16px", boxSizing: "border-box", width: "100%", fontFamily: "system-ui, sans-serif" }}>
       <h1 style={{ fontSize: "15px", margin: "0 0 12px", color: "#202124" }}>{t("appName")}</h1>
+      <p><a href={chrome.runtime.getURL("src/options/options.html")} target="_blank" rel="noreferrer">{t("transferSettings")}</a></p>
 
       {error && (
         <p style={{ fontSize: "12px", color: "#d93025", margin: "0 0 8px" }}>⚠ {error}</p>
